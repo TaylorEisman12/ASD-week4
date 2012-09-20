@@ -2,6 +2,177 @@ $('#index').on('pageinit', function(){
 	//code needed for home page goes here
 });	
 
+$( '#course1' ).live( "pageshow", function() {
+    $.couch.db( "asd_week4" ).view( "week4/times", {
+        success: function( result ) {
+            //console.log(data);
+            $( '#c1List' ).empty();
+            $( '<li>' ).attr( "data-role", "list-divider" )
+                        .text( "Game Date - Name" ).appendTo('#c1List');
+           $.each( result.rows, function( index, times ){
+                	//console.log(times.value.Options);
+                	var Options       = times.value.Options;
+                    if ( Options[1] === "Course 1" ) {
+                        var date      = times.value.date;
+                        var reservist = times.value.reservist;
+                            
+                        $( '<li>' ).append(
+                            $( '<a>' )
+                                .attr( "href", "time.html?reservist=" + 
+                                        reservist[1] )
+                                .text( date[1] + " - " + reservist[1] )
+                        ).appendTo( '#c1List' );
+                    }
+            });
+            $( '#c1List' ).listview( 'refresh' );
+        }
+    });
+});
+
+$( '#course2' ).live( "pageshow", function() {
+    $.couch.db( "asd_week4" ).view( "week4/times", {
+        success: function( result ) {
+            //console.log(data);
+            $( '#c2List' ).empty();
+            $( '<li>' ).attr( "data-role", "list-divider" )
+                        .text( "Game Date - Name" ).appendTo('#c2List');
+           $.each( result.rows, function( index, times ){
+                	//console.log(times.value.Options);
+                	var Options       = times.value.Options;
+                    if ( Options[1] === "Course 2" ) {
+                        var date      = times.value.date;
+                        var reservist = times.value.reservist;
+                            
+                        $( '<li>' ).append(
+                            $( '<a>' )
+                                .attr( "href", "time.html?reservist=" + 
+                                        reservist[1] )
+                                .text( date[1] + " - " + reservist[1] )
+                        ).appendTo( '#c2List' );
+                    }
+            });
+            $( '#c2List' ).listview( 'refresh' );
+        }
+    });
+});
+
+$( '#course3' ).live( "pageshow", function() {
+    $.couch.db( "asd_week4" ).view( "week4/times", {
+        success: function( result ) {
+            //console.log(data);
+            $( '#c3List' ).empty();
+            $( '<li>' ).attr( "data-role", "list-divider" )
+                        .text( "Game Date - Name" ).appendTo('#c3List');
+           $.each( result.rows, function( index, times ){
+                	//console.log(times.value.Options);
+                	var Options       = times.value.Options;
+                    if ( Options[1] === "Course 3" ) {
+                        var date      = times.value.date;
+                        var reservist = times.value.reservist;
+                            
+                        $( '<li>' ).append(
+                            $( '<a>' )
+                                .attr( "href", "time.html?reservist=" + 
+                                        reservist[1] )
+                                .text( date[1] + " - " + reservist[1] )
+                        ).appendTo( '#c3List' );
+                    }
+            });
+            $( '#c3List' ).listview( 'refresh' );
+        }
+    });
+});
+
+$( '#course4' ).live( "pageshow", function() {
+    $.couch.db( "asd_week4" ).view( "week4/times", {
+        success: function( result ) {
+            //console.log(data);
+            $( '#c4List' ).empty();
+            $( '<li>' ).attr( "data-role", "list-divider" )
+                        .text( "Game Date - Name" ).appendTo('#c4List');
+           $.each( result.rows, function( index, times ){
+                	//console.log(times.value.Options);
+                	var Options       = times.value.Options;
+                    if ( Options[1] === "Course 4" ) {
+                        var date      = times.value.date;
+                        var reservist = times.value.reservist;
+                            
+                        $( '<li>' ).append(
+                            $( '<a>' )
+                                .attr( "href", "time.html?reservist=" + 
+                                        reservist[1] )
+                                .text( date[1] + " - " + reservist[1] )
+                        ).appendTo( '#c4List' );
+                    }
+            });
+            $( '#c4List' ).listview( 'refresh' );
+        }
+    });
+});
+
+$( '#course5' ).live( "pageshow", function() {
+    $.couch.db( "asd_week4" ).view( "week4/times", {
+        success: function( result ) {
+            //console.log(data);
+            $( '#c5List' ).empty();
+            $( '<li>' ).attr( "data-role", "list-divider" )
+                        .text( "Game Date - Name" ).appendTo('#c5List');
+           $.each( result.rows, function( index, times ){
+                	//console.log(times.value.Options);
+                	var Options       = times.value.Options;
+                    if ( Options[1] === "Course 5" ) {
+                        var date      = times.value.date;
+                        var reservist = times.value.reservist;
+                            
+                        $( '<li>' ).append(
+                            $( '<a>' )
+                                .attr( "href", "time.html?reservist=" + 
+                                        reservist[1] )
+                                .text( date[1] + " - " + reservist[1] )
+                        ).appendTo( '#c5List' );
+                    }
+            });
+            $( '#c5List' ).listview( 'refresh' );
+        }
+    });
+});
+
+$( '#time' ).live( "pageshow", function() {
+    var urlData  = $( this ).data( "url" );
+    var keyValue = urlData.split( '=' );
+    var key      = decodeURIComponent( keyValue[1] ); 
+    //console.log(key);
+    $('#timeList').empty();
+    $.couch.db( "asd_week4" ).view( "week4/times", {
+        success: function( result ){   
+            //console.log(result);
+             
+             $.each( result.rows, function( index, times ){
+                	//console.log(times.value.Options);
+                	var reservist       = times.value.reservist;
+                    if ( reservist[1] === key ) {
+                        var Options     = times.value.Options;
+                        var numberGames = times.value.numberGames;
+                        var location    = times.value.location;
+                        var date        = times.value.date;
+                        var notes       = times.value.notes;
+                        
+                        $( ' ' + 
+                            '<div class="times">' +
+                            '<p>' + Options[0]      + " " + Options[1] +
+                            '<br>' + reservist[0]   + " " + reservist[1] + 
+                            '<br>' + numberGames[0] + " " + numberGames[1] + 
+                            '<br>' + location[0]    + " " + location[1] +
+                            '<br>' + date[0]        + " " + date[1] +
+                            '<br>' + notes[0]       + " " + notes[1] + '</p>' +
+                            '</div>'
+                            ).appendTo( '#timeList' );
+                    }
+                });
+            }
+        });
+});
+
 $( '#couchData' ).on('pageinit', function(){
 	 
 	 $( '#couchJsonButton' ).on( 'click', function () {
