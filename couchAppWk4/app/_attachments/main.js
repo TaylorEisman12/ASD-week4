@@ -196,6 +196,19 @@ $( '#time' ).live( "pageshow", function() {
                             }
                         });
                         
+                        var time = {
+                            _id:  id,
+                            
+                            Options: Options,
+                            reservist: reservist,
+                            numberGames: numberGames,
+                            location: location,
+                            date: date,
+                            notes: notes
+                        }
+                        $( '#editTime' ).on( 'click', function(){
+                            editTime( time );
+                        });
                         
                         $( ' ' + 
                             '<div class="times">' +
@@ -432,14 +445,36 @@ var storeData = function( key ){
 	
 		var id;
 	
-		if ( !key ) 
+		if ( key ) 
 		{
-			var id     = Math.floor( Math.random() * 10001 );
+            var doc = key;
+            $.couch.db("mydb").openDoc(doc._id, {
+                success: function(data) {
+                    console.log(data);
+                },
+                error: function(status) {
+                    console.log(status);
+                }
+            });
+            $( '#submit' ).on( 'click', function(){
+                console.log(doc);
+                $.couch.db("asd_week4").saveDoc(doc, {
+                    success: function(data) {
+                        console.log(data);
+                        $.mobile.changePage($('#time'));
+                        alert( "Time updated!" );
+                    },
+                    error: function(status) {
+                        console.log(status);
+                    }
+                });
+            });
+			return false;
 		}
 		else
 		{
-			id         = key;
-		}
+			var id     = Math.floor( Math.random() * 10001 );
+		
 		
 		var item       = {};
 		
@@ -472,6 +507,7 @@ var storeData = function( key ){
 		
 		localStorage.setItem( id, JSON.stringify( item ) );
 		alert( "Tee Time Added!" );
+        }
 }; 
 
 var	deleteItem = function (){
@@ -528,12 +564,16 @@ function toggleControls( n )
 		}
 	}
 
-var editItem = function()
+var editTime = function( time )
 	{
-		var value = localStorage.getItem( this.key );
-		var item  = JSON.parse( value );
+		//var value = localStorage.getItem( this.key );
+		//var item  = JSON.parse( value );
 		
-		toggleControls( "off" );
+		//toggleControls( "off" );
+        $.mobile.changePage($('#additem'));
+        
+        item = time;
+        console.log(time);
 		
 		$( '#Options' ).val( item.Options[1] );
 		$( '#reservist' ).val( item.reservist[1] );
@@ -541,9 +581,24 @@ var editItem = function()
 		$( '#location' ).val( item.location[1] );
 		$( '#date' ).val( item.date[1] );
 		$( '#notes' ).val( item.notes[1] );
-		
-		thiskey         = this.key;
-		$( '#submit' ).on( 'click', storeData( thiskey ) );
+        
+        $( '#submit' ).on( 'click', function(){
+            var doc = time;
+            $.couch.db("asd_week4").saveDoc(doc, {
+                success: function(data) {
+                    console.log(data);
+                    $.mobile.changePage($('#time'));
+                    alert( "Time updated!" );
+                },
+                error: function(status) {
+                    console.log(status);
+                }
+            });
+		});
+        
+        
+		//thiskey         = this.key;
+		$( '#submit' ).on( 'click', storeData( item ) );
 	}
 	
 function makeItemLinks( key, linksLi )

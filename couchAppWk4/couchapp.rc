@@ -4,7 +4,7 @@
       "db": "http://127.0.0.1:5984/asd_week4"
     },
     "cloudant": {
-      "db": "https://rdittmer:murphy31@rdittmer.cloudant.com/asd_week4"
+      "db": "https://rdittmer:murphy31@rdittmer.cloudant.com/asd_week4/"
     }
   }
 }
