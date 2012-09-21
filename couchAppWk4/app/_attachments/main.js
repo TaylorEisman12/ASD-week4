@@ -137,10 +137,22 @@ $( '#course5' ).live( "pageshow", function() {
     });
 });
 
+var urlVars = function(){
+    var urlData   = $( $.mobile.activePage).data( "url" );
+    var urlParts  = urlData.split( '?' );
+    var urlPairs  = urlParts[1].split( '&' );
+    var urlValues = {};
+    for ( var pair in urlPairs ) {
+        var keyValue   = urlPairs[pair].split( '=' );
+        var key        = decodeURIComponent( keyValue[0] );
+        var value      = decodeURIComponent( keyValue[1] );
+        urlValues[key] = value;
+    }
+    return urlValues;
+};
+
 $( '#time' ).live( "pageshow", function() {
-    var urlData  = $( this ).data( "url" );
-    var keyValue = urlData.split( '=' );
-    var key      = decodeURIComponent( keyValue[1] ); 
+    var key = urlVars()["reservist"];
     //console.log(key);
     $('#timeList').empty();
     $.couch.db( "asd_week4" ).view( "week4/times", {
@@ -156,6 +168,34 @@ $( '#time' ).live( "pageshow", function() {
                         var location    = times.value.location;
                         var date        = times.value.date;
                         var notes       = times.value.notes;
+                        var id  = times.id;
+                        var rev = times.value.rev;
+                        console.log(id);
+                        console.log(rev);
+                        
+                        $( '#deleteTime' ).on( 'click', function(){
+                        var ask = confirm( "Are you sure you want to delete this Tee Time?" );
+                        if (ask){
+                            var doc = {
+                                _id: id,
+                                _rev: rev
+                            };
+                            $.couch.db("asd_week4").removeDoc(doc, {
+                                success: function(data) {
+                                    console.log(data);
+                                    $.mobile.changePage($('#index'));
+                                    alert( "Tee Time Deleted!" );
+                                },
+                                error: function(status) {
+                                    console.log(status);
+                                }
+                            });
+                        }
+                        else{
+                            alert( "Tee Time not deleted!" );
+                            }
+                        });
+                        
                         
                         $( ' ' + 
                             '<div class="times">' +
@@ -409,6 +449,26 @@ var storeData = function( key ){
 		item.location     = ["Location:",         $( 'input[name=location]:checked', '#teeForm' ).val()];
 		item.date         = ["Date:",        	  $( '#date' ).val()];
 		item.notes        = ["Notes",             $( '#notes' ).val()];
+        //item._id          = [item.reservist[1]];
+        
+        var doc = {
+                    _id: item.reservist[1]
+                    };
+        doc.Options      = ["Course:",           $( '#Options' ).val()];
+		doc.reservist    = ["Reservist:",        $( '#reservist' ).val()];
+		doc.numberGames  = ["Number of Games:",  $( '#numberGames' ).val()];
+		doc.location     = ["Location:",         $( 'input[name=location]:checked', '#teeForm' ).val()];
+		doc.date         = ["Date:",        	 $( '#date' ).val()];
+		doc.notes        = ["Notes",             $( '#notes' ).val()];
+        
+        $.couch.db("asd_week4").saveDoc(doc, {
+            success: function(data) {
+            console.log(data);
+        },
+            error: function(status) {
+            console.log(status);
+        }
+});
 		
 		localStorage.setItem( id, JSON.stringify( item ) );
 		alert( "Tee Time Added!" );
@@ -440,7 +500,7 @@ var clearLocal = function(){
 };
 
 var windowReload = function(){
-		window.location.reload();
+		$.mobile.changePage($('#index'),{transition:"fade"});
 		return false;
 }
 
