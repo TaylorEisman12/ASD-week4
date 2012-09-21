@@ -198,7 +198,7 @@ $( '#time' ).live( "pageshow", function() {
                         
                         var time = {
                             _id:  id,
-                            
+                            _rev: rev,
                             Options: Options,
                             reservist: reservist,
                             numberGames: numberGames,
@@ -447,8 +447,8 @@ var storeData = function( key ){
 	
 		if ( key ) 
 		{
-            var doc = key;
-            $.couch.db("mydb").openDoc(doc._id, {
+             console.log("key:" + key);
+            $.couch.db("asd_week4").openDoc(key._id, {
                 success: function(data) {
                     console.log(data);
                 },
@@ -457,11 +457,22 @@ var storeData = function( key ){
                 }
             });
             $( '#submit' ).on( 'click', function(){
+                doc = {
+                    _id: key._id,
+                    _rev: key._rev,
+                    }
+                    doc.Options      = ["Course:",           $( '#Options' ).val()];
+                    doc.reservist    = ["Reservist:",        $( '#reservist' ).val()];
+                    doc.numberGames  = ["Number of Games:",  $( '#numberGames' ).val()];
+                    doc.location     = ["Location:",         $( 'input[name=location]:checked','#teeForm' ).val()];
+                    doc.date         = ["Date:",        	  $( '#date' ).val()];
+                    doc.notes        = ["Notes",             $( '#notes' ).val()];
+                
                 console.log(doc);
                 $.couch.db("asd_week4").saveDoc(doc, {
                     success: function(data) {
                         console.log(data);
-                        $.mobile.changePage($('#time'));
+                        $.mobile.changePage($( '#index' ));
                         alert( "Time updated!" );
                     },
                     error: function(status) {
@@ -582,7 +593,7 @@ var editTime = function( time )
 		$( '#date' ).val( item.date[1] );
 		$( '#notes' ).val( item.notes[1] );
         
-        $( '#submit' ).on( 'click', function(){
+        /*$( '#submit' ).on( 'click', function(){
             var doc = time;
             $.couch.db("asd_week4").saveDoc(doc, {
                 success: function(data) {
@@ -594,7 +605,7 @@ var editTime = function( time )
                     console.log(status);
                 }
             });
-		});
+		});*/
         
         
 		//thiskey         = this.key;
